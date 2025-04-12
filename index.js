@@ -14,6 +14,10 @@ app.get('/', (req, res) => {
 	res.render('pages/myWebPage.ejs')
 });
 
+app.get('/post', (req, res) => {
+	res.render('pages/PostPage.ejs')
+});
+
 app.use((req, res) => {
     res.status(404).send('404 - Page Not Found');
   });
