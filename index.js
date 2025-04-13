@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const port = 8080;
 
-const { MongoClient } = require("mongodb")
+const { MongoClient, ObjectId } = require("mongodb")
 const uri = "mongodb://127.0.0.1:27017"
 const client = new MongoClient(uri);
 
@@ -14,7 +14,11 @@ async function run() {
 try{
 	await client.connect();
 	await client.db("StoryDatabase");
+    db = client.db("StoryDatabase");
 	console.log("Connected to server and database stuff");
+    app.listen(port, () => {
+        console.log(`Server running on http://localhost:${port}`);
+    });    
 } catch (err) {
     console.log("connection error", err);
     }
@@ -25,8 +29,15 @@ app.set('view engine', 'ejs');
 app.use(express.static('views'));
 app.use(express.urlencoded({extended: true}));
 
-app.get('/', (req, res) => {
-	res.render('pages/myWebPage.ejs')
+app.get('/', async  (req, res) => {
+    try {
+        const stories = await db.collection('stories').find({}).toArray();
+	    res.render('pages/myWebPage.ejs', { stories });
+    } catch (err) {
+        console.error('Error fetching stories', err);
+        res.status(500).send('Error fetching stories');
+    }   
+
 });
 
 app.get('/post', (req, res) => {
@@ -36,28 +47,58 @@ app.get('/post', (req, res) => {
 app.post('/submit-story', async (req, res) => {
     const name = req.body.name.trim() || 'Anonymous';
     const story = req.body.story.trim();
-    const rating = 0;
   
     const storyData = {
         name: name,
         story: story,
-        rating: rating,
+        title: story.slice(0, 10) + '...',
+        rating: 0,
+        timestamp: new Date(),
       };
 
-      try {
+    try {
         await db.collection('stories').insertOne(storyData); // Save to DB
         console.log(`Story saved to database by: ${name}`);
         res.send(`<h2>Thanks, ${name}!</h2><p>Your story was saved.</p><a href="/post">Submit another</a>`);
-      } catch (err) {
+    } catch (err) {
         console.error("Error saving story:", err);
         res.status(500).send("Error saving your story. Please try again.");
-      }
-    });
+    }
+});
+
+app.get('/story/:id', async (req, res) => {
+    try {
+      const story = await db.collection('stories').findOne({ _id: new ObjectId(req.params.id) });
+  
+      if (!story) return res.status(404).send('Story not found.');
+  
+      res.render('pages/story.ejs', { story });
+    } catch (err) {
+      console.error('Error fetching story:', err);
+      res.status(500).send('Error fetching story.');
+    }
+});
+
+app.post('/rate/:id', async (req, res) => {
+    const rating = parseInt(req.body.rating);
+    if (isNaN(rating) || rating < 1 || rating > 5) {
+      return res.status(400).send('Invalid rating');
+    }
+  
+    try {
+      await db.collection('stories').updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: { rating: rating } }
+      );
+  
+      res.redirect(`/story/${req.params.id}`);
+    } catch (err) {
+      console.error('Error saving rating:', err);
+      res.status(500).send('Error saving rating.');
+    }
+});
+  
 
 app.use((req, res) => {
     res.status(404).send('404 - Page Not Found');
   });
-
-app.listen(port, () => {
-	console.log(`Server running on http://localhost:${port}`);
-});
