@@ -33,15 +33,52 @@
   </div>
 </nav>
 <h2>Share Your Story</h2>
-<form action="/submit-story" method="post">
-  <!-- Name Input -->
-  <input type="text" name="name" placeholder="Enter your name (leave blank for anonymous)" />
-  
-  <!-- Story Input -->
-  <textarea name="story" placeholder="Write your story here..." required></textarea>
 
-  <!-- Submit Button -->
-  <button type="submit">Submit Story</button>
+<form action="/submit-story" method="POST" onsubmit="return validateStory()">
+  <input type="text" name="name" placeholder="Your name (optional)">
+  <br>
+  <textarea name="story" placeholder="Your story..." rows="8" cols="60" required></textarea>
+  <br>
+  <p><span id="wordCount">0</span>/500 words</p>
+  <button type="submit" id="submitBtn">Submit</button>
 </form>
+
+<script>
+  const textarea = document.querySelector('textarea[name="story"]');
+  const wordCountDisplay = document.getElementById('wordCount');
+  const submitBtn = document.getElementById('submitBtn');
+
+  textarea.addEventListener('input', () => {
+    const words = textarea.value.trim().split(/\s+/);
+    const count = textarea.value.trim() ? words.length : 0;
+    wordCountDisplay.textContent = count;
+
+    if (count > 500) {
+      submitBtn.disabled = true;
+      wordCountDisplay.style.color = 'red';
+    } else {
+      submitBtn.disabled = false;
+      wordCountDisplay.style.color = 'black';
+    }
+  });
+
+  function validateStory() {
+    const story = textarea.value.trim();
+    const wordCount = story ? story.split(/\s+/).length : 0;
+
+    if (wordCount === 0) {
+      alert("Please write something before submitting!");
+      return false;
+    }
+
+    if (wordCount > 500) {
+      alert("Your story is too long! (Max 500 words)");
+      return false;
+    }
+
+    return true;
+  }
+
+</script>
 </body>
 </html>
