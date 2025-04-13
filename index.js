@@ -4,6 +4,20 @@ const express = require('express');
 const app = express();
 const port = 8080;
 
+const { MongoClient } = require("mongodb")
+const uri = "mongodb://127.0.0.1:27017"
+const client = new MongoClient(uri);
+async function run() {
+try{
+	await client.connect();
+	await client.db("admin").command({ ping: 1 });
+	console.log("Connected to server and database stuff");
+} finally{
+await client.close();
+}
+}
+run().catch(console.dir);
+
 app.set('view engine', 'ejs');
 app.use(express.static('views'));
 app.use(express.urlencoded({extended: true}));
