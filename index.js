@@ -134,6 +134,22 @@ app.post('/rate/:id', async (req, res) => {
       res.status(500).send('Error saving rating.');
     }
 });
+
+
+app.get('/admin/fix-ratings', async (req, res) => {
+    try {
+      const result = await db.collection('stories').updateMany(
+        { $or: [ { ratings: { $type: "int" } }, { ratings: { $type: "null" } } ] },
+        { $set: { ratings: [] } }
+      );
+  
+      res.send(`<p>Fixed ${result.modifiedCount} stories.</p>`);
+    } catch (err) {
+      console.error('Error fixing ratings:', err);
+      res.status(500).send('Failed to fix ratings.');
+    }
+  });
+  
   
 
 app.use((req, res) => {
