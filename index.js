@@ -52,14 +52,14 @@ app.post('/submit-story', async (req, res) => {
     const name = xss(req.body.name.trim() || 'Anonymous');
     const story = xss(req.body.story?.trim() || '');
   
-    if (!storyText || storyText.length === 0) {
+    if (!story || story.length === 0) {
         return res.status(400).send(`
           <h2>Error: Story cannot be empty!</h2>
           <a href="/post">Go back and write something!</a>
         `);
     }
 
-    const wordCount = storyText.split(/\s+/).length;
+    const wordCount = story.split(/\s+/).length;
     if (wordCount > 500) {
     return res.status(400).send(`
       <h2>Error: Story is too long! (Max 500 words, you entered ${wordCount})</h2>

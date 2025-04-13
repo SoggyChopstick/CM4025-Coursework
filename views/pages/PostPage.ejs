@@ -37,22 +37,23 @@
 <form action="/submit-story" method="POST" onsubmit="return validateStory()">
   <input type="text" name="name" placeholder="Your name (optional)">
   <br>
-  <textarea name="story" placeholder="Your story..." rows="8" cols="60" required></textarea>
+  <textarea id="storyInput" name="story" placeholder="Your story..." rows="8" cols="60" required></textarea>
   <br>
   <p><span id="wordCount">0</span>/500 words</p>
   <button type="submit" id="submitBtn">Submit</button>
 </form>
 
 <script>
-  const textarea = document.querySelector('textarea[name="story"]');
+  const storyInput = document.getElementById('storyInput');
   const wordCountDisplay = document.getElementById('wordCount');
   const submitBtn = document.getElementById('submitBtn');
 
-  textarea.addEventListener('input', () => {
-    const words = textarea.value.trim().split(/\s+/);
-    const count = textarea.value.trim() ? words.length : 0;
-    wordCountDisplay.textContent = count;
-
+  function updateWordCount(){
+    const text = storyInput.value.trim();
+    const wordCount = text === "" ? 0 : text.split(/\s+/).length;
+    
+    wordCountDisplay.textContent = wordCount;
+    
     if (count > 500) {
       submitBtn.disabled = true;
       wordCountDisplay.style.color = 'red';
@@ -60,11 +61,13 @@
       submitBtn.disabled = false;
       wordCountDisplay.style.color = 'black';
     }
-  });
+  }
+  
+  storyInput.addEventListener('input, updateWordCount);
 
   function validateStory() {
-    const story = textarea.value.trim();
-    const wordCount = story ? story.split(/\s+/).length : 0;
+    const story = storyInput.value.trim();
+    const wordCount = story == "" ? 0 story.split(/\s+/).length;
 
     if (wordCount === 0) {
       alert("Please write something before submitting!");
