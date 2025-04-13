@@ -8,6 +8,10 @@ const { MongoClient, ObjectId } = require("mongodb")
 const uri = "mongodb://127.0.0.1:27017"
 const client = new MongoClient(uri);
 
+const xss = require('xss');
+const helmet = require('helmet');
+app.use(helmet());
+
 let db;
 
 async function run() {
@@ -45,9 +49,25 @@ app.get('/post', (req, res) => {
 });
 
 app.post('/submit-story', async (req, res) => {
-    const name = req.body.name.trim() || 'Anonymous';
-    const story = req.body.story.trim();
+    const name = xss(req.body.name.trim() || 'Anonymous');
+    const story = xss(req.body.story?.trim() || '');
   
+    if (!storyText || storyText.length === 0) {
+        return res.status(400).send(`
+          <h2>Error: Story cannot be empty!</h2>
+          <a href="/post">Go back and write something!</a>
+        `);
+    }
+
+    const wordCount = storyText.split(/\s+/).length;
+    if (wordCount > 500) {
+    return res.status(400).send(`
+      <h2>Error: Story is too long! (Max 500 words, you entered ${wordCount})</h2>
+      <a href="/post">Go back and shorten it </a>
+    `);
+  }
+
+
     const storyData = {
         name: name,
         story: story,
