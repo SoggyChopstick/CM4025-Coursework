@@ -98,7 +98,17 @@ app.get('/story/:id', async (req, res) => {
   
       if (!story) return res.status(404).send('Story not found.');
   
-      res.render('pages/story.ejs', { story });
+      const ratings = story.ratings || [];
+      const avgRating = ratings.length
+        ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
+        : null;
+
+      res.render('pages/story.ejs', { 
+        story,
+        avgRating,
+        totalRatings: ratings.length 
+      });
+    
     } catch (err) {
       console.error('Error fetching story:', err);
       res.status(500).send('Error fetching story.');
@@ -107,6 +117,7 @@ app.get('/story/:id', async (req, res) => {
 
 app.post('/rate/:id', async (req, res) => {
     const rating = parseInt(req.body.rating);
+    
     if (isNaN(rating) || rating < 1 || rating > 5) {
       return res.status(400).send('Invalid rating');
     }
@@ -114,7 +125,7 @@ app.post('/rate/:id', async (req, res) => {
     try {
       await db.collection('stories').updateOne(
         { _id: new ObjectId(req.params.id) },
-        { $set: { rating: rating } }
+        { $push: { rating: rating } }
       );
   
       res.redirect(`/story/${req.params.id}`);
