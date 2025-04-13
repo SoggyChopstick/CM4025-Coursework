@@ -78,7 +78,7 @@ app.post('/submit-story', async (req, res) => {
         name: name,
         story: story,
         title: story.slice(0, 10) + '...',
-        rating: 0,
+        rating: [],
         timestamp: new Date(),
       };
 
