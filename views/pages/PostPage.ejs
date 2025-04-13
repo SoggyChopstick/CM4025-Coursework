@@ -54,7 +54,7 @@
     
     wordCountDisplay.textContent = wordCount;
     
-    if (count > 500) {
+    if (wordCount > 500) {
       submitBtn.disabled = true;
       wordCountDisplay.style.color = 'red';
     } else {
@@ -63,11 +63,11 @@
     }
   }
   
-  storyInput.addEventListener('input, updateWordCount);
+  storyInput.addEventListener('input', updateWordCount);
 
   function validateStory() {
     const story = storyInput.value.trim();
-    const wordCount = story == "" ? 0 story.split(/\s+/).length;
+    const wordCount = story == "" ? 0 : story.split(/\s+/).length;
 
     if (wordCount === 0) {
       alert("Please write something before submitting!");
