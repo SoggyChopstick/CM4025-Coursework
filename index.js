@@ -10,7 +10,13 @@ const client = new MongoClient(uri);
 
 const xss = require('xss');
 const helmet = require('helmet');
-app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+	directives: {
+		defaultSrc: ["'self'"],
+		scriptSrc: ["'self'", "http://cdn.jsdelivr.net"],
+		styleSrc: ["'self'", "https://cdn.jsdelivr.net"],
+	}
+}));
 
 let db;
 
