@@ -2,10 +2,10 @@ const path = require('path');
 const express = require('express');
 //const session = require('express-session');
 const app = express();
-const port = 8080;
+const port = process.env.port || 8080;
 
 const { MongoClient, ObjectId } = require("mongodb")
-const uri = "mongodb://myUserAdmin:password@mongodb://127.0.0.1:27017"
+const uri = "mongodb://databaseAdmin:password@127.0.0.1:27017/StoryDatabase?authSource=admin"
 const client = new MongoClient(uri);
 
 const xss = require('xss');
@@ -26,7 +26,7 @@ try{
 	await client.db("StoryDatabase");
     db = client.db("StoryDatabase");
 	console.log("Connected to server and database stuff");
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
         console.log(`Server running on http://localhost:${port}`);
     });    
 } catch (err) {
