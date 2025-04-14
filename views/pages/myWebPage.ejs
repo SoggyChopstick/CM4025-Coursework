@@ -34,6 +34,7 @@
         <%= story.title || (story.story.substring(0, 20) + "...") %>
       </a>
       by <%= story.name %>
+      <p><strong>Genre:</strong> <%= story.genre || 'Unspecified' %></p>
     </li>
   <% }) %>
 </ul>

@@ -57,6 +57,7 @@ app.get('/post', (req, res) => {
 app.post('/submit-story', async (req, res) => {
     const name = xss(req.body.name.trim() || 'Anonymous');
     const story = xss(req.body.story?.trim() || '');
+    const genre = req.body.genre || 'Unspecified';
   
     if (!story || story.length === 0) {
         return res.status(400).send(`
@@ -77,9 +78,9 @@ app.post('/submit-story', async (req, res) => {
     const storyData = {
         name: name,
         story: story,
+        genre,
         title: story.slice(0, 10) + '...',
         rating: [],
-        timestamp: new Date(),
       };
 
     try {
