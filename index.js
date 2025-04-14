@@ -26,8 +26,8 @@ try{
 	await client.db("StoryDatabase");
     db = client.db("StoryDatabase");
 	console.log("Connected to server and database stuff");
-    app.listen(port, '0.0.0.0', () => {
-        console.log(`Server running on http:// 0.0.0.0:${port}`);
+    app.listen(port, () => {
+        console.log(`Server running on http://localhost:${port}`);
     });    
 } catch (err) {
     console.log("connection error", err);
