@@ -93,8 +93,14 @@ app.post('/submit-story', async (req, res) => {
 });
 
 app.get('/story/:id', async (req, res) => {
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).send('Invalid story ID format');
+    }
+
     try {
-      const story = await db.collection('stories').findOne({ _id: new ObjectId(req.params.id) });
+      const story = await db.collection('stories').findOne({ _id: new ObjectId(id) });
   
       if (!story) return res.status(404).send('Story not found.');
   
@@ -116,6 +122,12 @@ app.get('/story/:id', async (req, res) => {
 });
 
 app.post('/rate/:id', async (req, res) => {
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).send('Invalid story ID format');
+    }
+    
     const rating = parseInt(req.body.rating);
     
     if (isNaN(rating) || rating < 1 || rating > 5) {
@@ -124,11 +136,11 @@ app.post('/rate/:id', async (req, res) => {
   
     try {
       await db.collection('stories').updateOne(
-        { _id: new ObjectId(req.params.id) },
+        { _id: new ObjectId(id) },
         { $push: { rating: rating } }
       );
   
-      res.redirect(`/story/${req.params.id}`);
+      res.redirect(`/story/${id}`);
     } catch (err) {
       console.error('Error saving rating:', err);
       res.status(500).send('Error saving rating.');

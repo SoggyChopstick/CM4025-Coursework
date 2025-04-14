@@ -1,4 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {
     const starContainer = document.getElementById("starContainer");
     const stars = starContainer.querySelectorAll(".star");
     const ratingMessage = document.getElementById("ratingMessage");
@@ -51,4 +50,3 @@ document.addEventListener("DOMContentLoaded", () => {
         star.classList.toggle("selected", value <= rating);
       });
     }
-  });
