@@ -46,24 +46,17 @@
 
 <h3>Rate this story</h3>
 <form id="ratingForm" action="/rate/<%= story._id %>" method="POST">
-    <div id="starContainer" class="star-rating">
-      <% for (let i = 1; i <= 5; i++) { %>
-        <span class="star" data-value="<%= i %>" onclick="selectRating(<%= i %>)">☆</span>
-      <% } %>
-    </div>
-    <button type="submit" id="submitBtn" class="btn btn-primary mt-2">Submit Rating</button>
-  </form>
+  <div id="starContainer" class="star-rating">
+    <% for (let i = 1; i <= 5; i++) { %>
+      <span class="star" data-value="<%= i %>" onclick="selectRating(<%= i %>)">☆</span>
+    <% } %>
+  </div>
+  
+  <!-- Hidden input to store the rating value -->
+  <input type="hidden" id="ratingInput" name="rating" value="0">
 
-<!--<h3>Rate this story</h3>
-<form action="/rate/<%= story._id %>" method="POST" class="rating-form">
-    <div class="star-rating">
-      <% for (let i = 5; i >= 1; i--) { %>
-        <input type="radio" id="star<%= i %>" name="rating" value="<%= i %>">
-        <label for="star<%= i %>" title="<%= i %> stars">⭐</label>
-      <% } %>
-    </div>
-    <button type="submit" class="btn btn-primary mt-2">Submit Rating</button>
-  </form>
--->
+  <button type="submit" id="submitBtn" class="btn btn-primary mt-2">Submit Rating</button>
+</form>
+
 </body>
 </html>
