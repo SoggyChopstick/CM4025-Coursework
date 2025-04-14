@@ -27,9 +27,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Automatically submit the form
         submitBtn.addEventListener('click', function () {
             if (selectedRating) {
-              submitRating(selectedRating); // Submit the rating to the server
+                ratingForm.submit(); // Submit the rating to the server
             }
           });
-              });
+
+      });
     });
   });
