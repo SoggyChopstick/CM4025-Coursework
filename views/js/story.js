@@ -1,31 +1,53 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const stars = document.querySelectorAll('.star');
-    const ratingInput = document.getElementById('ratingInput');
+document.addEventListener('DOMContentLoaded', function () {
+    const starContainer = document.getElementById('starContainer');
+    const stars = starContainer.getElementsByClassName('star');
+    const submitBtn = document.getElementById('submitRatingBtn');
     const ratingMessage = document.getElementById('ratingMessage');
-    const ratingForm = document.getElementById('ratingForm');
+    const storyId = starContainer.getAttribute('data-story-id');
     
-    // Handle click events on the stars
-    stars.forEach(star => {
+    let selectedRating = null; // Store the selected rating
+  
+    // Function to update the star icons based on the rating
+    function updateStars(rating) {
+      Array.from(stars).forEach((star, index) => {
+        star.textContent = index < rating ? '⭐' : '☆';
+      });
+    }
+  
+    // Add click event listener for stars
+    Array.from(stars).forEach((star, index) => {
       star.addEventListener('click', function () {
-        const selectedRating = parseInt(star.getAttribute('data-value'));
-        
-        // Update the stars display
-        stars.forEach(s => {
-          if (parseInt(s.getAttribute('data-value')) <= selectedRating) {
-            s.textContent = '⭐';
-          } else {
-            s.textContent = '☆';
-          }
-        });
-  
-        // Set the selected rating in the hidden input field
-        ratingInput.value = selectedRating;
-  
-        // Show a message that the rating is selected
-        ratingMessage.textContent = `You selected ${selectedRating} stars`;
-  
-        // Automatically submit the form
-        ratingForm.submit();
+        selectedRating = index + 1; // Set the selected rating
+        updateStars(selectedRating); // Update the star icons
+        submitBtn.disabled = false; // Enable the submit button
       });
     });
+  
+    // Submit rating when the submit button is clicked
+    submitBtn.addEventListener('click', function () {
+      if (selectedRating) {
+        submitRating(selectedRating); // Submit the rating to the server
+      }
+    });
+  
+    // Function to send the rating to the server
+    function submitRating(rating) {
+      fetch(`/rate/${storyId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rating }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          ratingMessage.textContent = `Thanks for rating! Your rating: ${rating} stars.`;
+          submitBtn.disabled = true; // Disable the submit button after submission
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          ratingMessage.textContent = 'There was an error submitting your rating. Please try again.';
+        });
+    }
   });
+  

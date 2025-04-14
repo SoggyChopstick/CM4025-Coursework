@@ -46,15 +46,15 @@
 
 <h3>Rate this story</h3>
 <div id="starContainer" class="star-rating" data-story-id="<%= story._id %>">
-  <% for (let i = 1; i <= 5; i++) { %>
-    <span class="star" data-value="<%= i %>">☆</span>
-  <% } %>
-</div>
-<p id="ratingMessage" class="mt-2"></p>
-<form id="ratingForm" action="/rate/<%= story._id %>" method="POST" style="display:none;">
-    <input type="hidden" name="rating" id="ratingInput">
-    <button type="submit">Submit Rating</button>
-</form>
+    <% for (let i = 1; i <= 5; i++) { %>
+      <span class="star" data-value="<%= i %>">☆</span>
+    <% } %>
+  </div>
+  
+  <button id="submitRatingBtn" class="btn btn-primary mt-2" disabled>Submit Rating</button>
+  
+  <p id="ratingMessage" class="mt-2"></p>
+  
 
 <!--<h3>Rate this story</h3>
 <form action="/rate/<%= story._id %>" method="POST" class="rating-form">
