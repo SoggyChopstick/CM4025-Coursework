@@ -28,3 +28,22 @@ const starContainer = document.getElementById('starContainer');
       submitRating(selectedRating); // Submit the rating to the server
     }
   });
+
+  function submitRating(rating) {
+    fetch(`/rate/${storyId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rating }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        ratingMessage.textContent = `Thanks for rating! Your rating: ${rating} stars.`;
+        submitBtn.disabled = true; // Disable the submit button after submission
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        ratingMessage.textContent = 'There was an error submitting your rating. Please try again.';
+      });
+  }
