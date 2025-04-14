@@ -5,7 +5,7 @@ const app = express();
 const port = 8080;
 
 const { MongoClient, ObjectId } = require("mongodb")
-const uri = "mongodb://127.0.0.1:27017"
+const uri = "mongodb://test:password@mongodb://127.0.0.1:27017"
 const client = new MongoClient(uri);
 
 const xss = require('xss');
