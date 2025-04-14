@@ -25,25 +25,20 @@ const starContainer = document.getElementById('starContainer');
   // Submit rating when the submit button is clicked
   submitBtn.addEventListener('click', function () {
     if (selectedRating) {
-      submitRating(selectedRating); // Submit the rating to the server
+        document.getElementById('ratingForm').submit(); 
     }
   });
-
-  function submitRating(rating) {
-    fetch(`/rate/${storyId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ rating }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        ratingMessage.textContent = `Thanks for rating! Your rating: ${rating} stars.`;
-        submitBtn.disabled = true; // Disable the submit button after submission
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        ratingMessage.textContent = 'There was an error submitting your rating. Please try again.';
-      });
+  
+  function selectRating(rating) {
+    selectedRating = rating;
+    // Update UI to show selected rating
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+      if (parseInt(star.dataset.value) <= rating) {
+        star.textContent = '⭐';  // Filled star
+      } else {
+        star.textContent = '☆';  // Empty star
+      }
+    });
   }
+  
