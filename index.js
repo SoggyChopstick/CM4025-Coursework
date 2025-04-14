@@ -98,15 +98,15 @@ app.get('/story/:id', async (req, res) => {
   
       if (!story) return res.status(404).send('Story not found.');
   
-      const ratings = story.ratings || [];
-      const avgRating = ratings.length
-        ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
-        : null;
-
+      let avgRating = null;
+      if (story.rating && story.rating.length > 0) {
+	const total = story.rating.reduce((sum, r) => sum + r, 0);
+	avgRating = total / story.rating.length;
+      }
+      
       res.render('pages/story.ejs', { 
         story,
-        avgRating,
-        totalRatings: ratings.length 
+        avgRating
       });
     
     } catch (err) {
@@ -134,23 +134,6 @@ app.post('/rate/:id', async (req, res) => {
       res.status(500).send('Error saving rating.');
     }
 });
-
-
-app.get('/admin/fix-ratings', async (req, res) => {
-    try {
-      const result = await db.collection('stories').updateMany(
-        { $or: [ { ratings: { $type: "int" } }, { ratings: { $type: "null" } } ] },
-        { $set: { ratings: [] } }
-      );
-  
-      res.send(`<p>Fixed ${result.modifiedCount} stories.</p>`);
-    } catch (err) {
-      console.error('Error fixing ratings:', err);
-      res.status(500).send('Failed to fix ratings.');
-    }
-  });
-  
-  
 
 app.use((req, res) => {
     res.status(404).send('404 - Page Not Found');

@@ -33,6 +33,16 @@
 <p><strong>By:</strong> <%= story.name %></p>
 <p><%= story.story %></p>
 
+<h3>Rating:</h3>
+<% if (story.rating) { %>
+    <p>
+        <% for (let i = 1; i <= 5; i++) { %>
+          <span><%= i <= Math.round(avgRating) ? '⭐' : '☆' %></span>
+        <% } %>
+    </p><% } else { %>
+  <p>No ratings yet. Be the first to rate!</p>
+<% } %>
+
 <h3>Rate this story</h3>
 <form action="/rate/<%= story._id %>" method="POST" class="rating-form">
     <div class="star-rating">
@@ -43,16 +53,6 @@
     </div>
     <button type="submit" class="btn btn-primary mt-2">Submit Rating</button>
   </form>
-
-<h3>Rating:</h3>
-<% if (avgRating) { %>
-    <p>
-        <% for (let i = 1; i <= 5; i++) { %>
-          <span><%= i <= Math.round(avgRating) ? '⭐' : '☆' %></span>
-        <% } %>
-    </p><% } else { %>
-  <p>No ratings yet. Be the first to rate!</p>
-<% } %>
 
 </body>
 </html>
