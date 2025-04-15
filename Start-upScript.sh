@@ -23,7 +23,7 @@ curl -fsSL https://deb.nodesource.com/setup_lts.x | -E bash -
 sudo apt install -y nodejs
 
 echo "Starting MongoDB..."
-mongod --fork --auth --port 27017 --dbpath "$DB_PATH"
+mongod --fork --auth --port 27017 --dbpath "$DB_PATH" --logpath ./data/mongod.log
 echo "MongoDB started."
 
 echo "Installing Node.js packages..."
